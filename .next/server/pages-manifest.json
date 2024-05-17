@@ -2,7 +2,10 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
   "/api/users": "pages/api/users.js",
-  "/api/projects": "pages/api/projects.js"
+  "/dashboard": "pages/dashboard.js",
+  "/api/customers": "pages/api/customers.js",
+  "/": "pages/index.js",
+  "/api/projects": "pages/api/projects.js",
+  "/api/quotations": "pages/api/quotations.js"
 }
