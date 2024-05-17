@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import styles from '../styles/dashboard.module.css';
 
 export default function Dashboard() {
   const [users, setUsers] = useState([]);
@@ -24,39 +23,39 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className={styles.container}>
-      <h1>Dashboard</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
       
-      <section className={styles.section}>
-        <h2>Users</h2>
-        <ul>
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Users</h2>
+        <ul className="list-disc pl-5">
           {users.map(user => (
             <li key={user.id}>{user.name} ({user.email})</li>
           ))}
         </ul>
       </section>
       
-      <section className={styles.section}>
-        <h2>Customers</h2>
-        <ul>
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Customers</h2>
+        <ul className="list-disc pl-5">
           {customers.map(customer => (
             <li key={customer.id}>{customer.name} ({customer.email})</li>
           ))}
         </ul>
       </section>
 
-      <section className={styles.section}>
-        <h2>Projects</h2>
-        <ul>
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Projects</h2>
+        <ul className="list-disc pl-5">
           {projects.map(project => (
             <li key={project.id}>{project.projectNumber} (Customer ID: {project.customerId})</li>
           ))}
         </ul>
       </section>
 
-      <section className={styles.section}>
-        <h2>Quotations</h2>
-        <ul>
+      <section>
+        <h2 className="text-xl font-semibold mb-2">Quotations</h2>
+        <ul className="list-disc pl-5">
           {quotations.map(quotation => (
             <li key={quotation.id}>{quotation.quotationNumber} (Project ID: {quotation.projectId})</li>
           ))}
