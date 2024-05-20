@@ -49,6 +49,7 @@ export default function ProjectDetail({ projectId, goBack }) {
           <li key={quotation.id} className="bg-gray-50 p-3 rounded-md shadow-sm">
             <p className="font-medium">Quotation Number: {quotation.quotationNumber}</p>
             <p className="text-gray-600">Created At: {new Date(quotation.createdAt).toLocaleDateString()}</p>
+            <p className="text-gray-600">Status: {quotation.status}</p> {/* Lägg till statusfältet här */}
           </li>
         ))}
       </ul>

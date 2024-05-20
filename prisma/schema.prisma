@@ -8,37 +8,57 @@ generator client {
 }
 
 model User {
-  id          Int         @id @default(autoincrement())
-  name        String
-  email       String      @unique
-  customers   Customer[]  @relation("CustomerCreatedBy")
-  quotations  Quotation[] @relation("QuotationCreatedBy")
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  projects  Project[] @relation("UserProjects")
+  customers Customer[] @relation("UserCustomers")
 }
 
 model Customer {
-  id         Int       @id @default(autoincrement())
-  name       String
-  email      String    @unique
-  createdAt  DateTime  @default(now())
-  createdBy  User      @relation(fields: [createdById], references: [id], name: "CustomerCreatedBy")
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  createdAt   DateTime  @default(now())
   createdById Int
-  projects   Project[]
+  createdBy   User      @relation(fields: [createdById], references: [id], name: "UserCustomers")
+  projects    Project[]
 }
 
 model Project {
   id            Int       @id @default(autoincrement())
   projectNumber String
+  status        ProjectStatus @default(ACTIVE)
+  title         String
+  description   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   customer      Customer  @relation(fields: [customerId], references: [id])
-  customerId    Int
   quotations    Quotation[]
+  userId        Int
+  user          User      @relation(fields: [userId], references: [id], name: "UserProjects")
 }
 
 model Quotation {
-  id              Int       @id @default(autoincrement())
-  quotationNumber String
-  createdAt       DateTime  @default(now())
-  createdBy       User      @relation(fields: [createdById], references: [id], name: "QuotationCreatedBy")
-  createdById     Int
-  project         Project   @relation(fields: [projectId], references: [id])
-  projectId       Int
+  id               Int       @id @default(autoincrement())
+  quotationNumber  String
+  status           QuotationStatus @default(SENT)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  createdById      Int?
+  projectId        Int
+  project          Project  @relation(fields: [projectId], references: [id])
+}
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  CLOSED
+}
+
+enum QuotationStatus {
+  SENT
+  REJECTED
+  APPROVED
+  ARCHIVED
 }

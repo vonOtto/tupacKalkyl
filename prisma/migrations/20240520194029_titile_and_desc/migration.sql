@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Project" ALTER COLUMN "title" DROP DEFAULT,
+ALTER COLUMN "userId" DROP DEFAULT;

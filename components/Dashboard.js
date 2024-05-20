@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import Section from './Section';
+import ProjectDetail from './ProjectDetail';
+import CreateProject from './CreateProject';
 
-export default function Dashboard({ activeSection, viewProject }) {
+export default function Dashboard({ activeSection }) {
   const [users, setUsers] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [projects, setProjects] = useState([]);
   const [quotations, setQuotations] = useState([]);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -18,6 +21,13 @@ export default function Dashboard({ activeSection, viewProject }) {
           fetch('/api/quotations'),
         ]);
 
+        console.log('API Responses:', {
+          usersRes,
+          customersRes,
+          projectsRes,
+          quotationsRes,
+        });
+
         if (!usersRes.ok) throw new Error('Failed to fetch users');
         if (!customersRes.ok) throw new Error('Failed to fetch customers');
         if (!projectsRes.ok) throw new Error('Failed to fetch projects');
@@ -27,6 +37,11 @@ export default function Dashboard({ activeSection, viewProject }) {
         const customersData = await customersRes.json();
         const projectsData = await projectsRes.json();
         const quotationsData = await quotationsRes.json();
+
+        console.log('Users data:', usersData);
+        console.log('Customers data:', customersData);
+        console.log('Projects data:', projectsData);
+        console.log('Quotations data:', quotationsData);
 
         setUsers(usersData);
         setCustomers(customersData);
@@ -41,9 +56,16 @@ export default function Dashboard({ activeSection, viewProject }) {
     fetchData();
   }, []);
 
-  const getProjectNumberById = (projectId) => {
-    const project = projects.find(project => project.id === projectId);
-    return project ? project.projectNumber : 'Unknown Project';
+  const handleProjectClick = (projectId) => {
+    setSelectedProjectId(projectId);
+  };
+
+  const handleGoBack = () => {
+    setSelectedProjectId(null);
+  };
+
+  const handleCreateProject = (newProject) => {
+    setProjects([...projects, newProject]);
   };
 
   if (error) {
@@ -52,6 +74,12 @@ export default function Dashboard({ activeSection, viewProject }) {
 
   return (
     <div className="w-3/4 p-8">
+      {activeSection === 'home' && (
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">Welcome to the Dashboard</h2>
+          <p>Select a section from the menu to get started.</p>
+        </div>
+      )}
       {activeSection === 'users' && (
         <Section
           id="users"
@@ -78,19 +106,30 @@ export default function Dashboard({ activeSection, viewProject }) {
           )}
         />
       )}
-      {activeSection === 'projects' && (
-        <Section
-          id="projects"
-          title="Projects"
-          items={projects}
-          renderItem={(project) => (
-            <li key={project.id} className="bg-gray-50 p-3 rounded-md shadow-sm">
-              <p className="font-medium">Project Number: {project.projectNumber}</p>
-              <p className="text-gray-600">Customer ID: {project.customerId}</p>
-              <button onClick={() => viewProject(project.id)} className="text-blue-500 underline">View Details</button>
-            </li>
-          )}
-        />
+      {activeSection === 'projects' && !selectedProjectId && (
+        <div>
+          <CreateProject onCreate={handleCreateProject} customers={customers} />
+          <Section
+            id="projects"
+            title="Projects"
+            items={projects}
+            renderItem={(project) => (
+              <li key={project.id} className="bg-gray-50 p-3 rounded-md shadow-sm">
+                <p className="font-medium">Project Number: {project.projectNumber}</p>
+                {project.customer ? (
+                  <p className="text-gray-600">Customer: {project.customer.name}</p>
+                ) : (
+                  <p className="text-gray-600">Customer: Unknown</p>
+                )}
+                <p className="text-gray-600">Status: {project.status}</p>
+                <button onClick={() => handleProjectClick(project.id)} className="text-blue-500 underline">View Details</button>
+              </li>
+            )}
+          />
+        </div>
+      )}
+      {activeSection === 'projects' && selectedProjectId && (
+        <ProjectDetail projectId={selectedProjectId} goBack={handleGoBack} />
       )}
       {activeSection === 'quotations' && (
         <Section
@@ -100,7 +139,8 @@ export default function Dashboard({ activeSection, viewProject }) {
           renderItem={(quotation) => (
             <li key={quotation.id} className="bg-gray-50 p-3 rounded-md shadow-sm">
               <p className="font-medium">Quotation Number: {quotation.quotationNumber}</p>
-              <p className="text-gray-600">Project Number: {getProjectNumberById(quotation.projectId)}</p>
+              <p className="text-gray-600">Project Number: {quotation.project.projectNumber}</p>
+              <p className="text-gray-600">Status: {quotation.status}</p>
             </li>
           )}
         />

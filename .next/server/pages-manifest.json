@@ -3,9 +3,8 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/dashboard": "pages/dashboard.js",
-  "/api/customers": "pages/api/customers.js",
   "/api/users": "pages/api/users.js",
+  "/api/customers": "pages/api/customers.js",
   "/api/projects": "pages/api/projects.js",
-  "/api/quotations": "pages/api/quotations.js",
-  "/api/projects/[id]": "pages/api/projects/[id].js"
+  "/api/quotations": "pages/api/quotations.js"
 }
